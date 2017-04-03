@@ -17,7 +17,7 @@ fx <- function(x){
 }
 
 jpeg('~/Documents/Classes/statdemog/week1/pdfX.jpg')
-qplot(x, fx(x),geom = "line")
+qplot(x, fx(x),geom = "line", main="PDF", ylab="f(x)")
 dev.off()
 
 # hazard function
@@ -37,13 +37,18 @@ e0
 # life expectancy at age 2
 gammainc(8/3, 1/3)[["uppinc"]] / 3^(2/3) / Sx(2)
 
+# 1g
+(exp(2^3/-3) - exp(4^3/-3)) / exp(2^3/-3)
+
 # 2a plot dat ain reg space and log space
 jpeg('~/Documents/Classes/statdemog/week1/gomp.jpg')
-ggplot(data=DF, aes(x=age, y=nMx)) + geom_point()
+ggplot(data=DF, aes(x=age, y=nMx)) + geom_point() + 
+    labs(title="Age Specific Mort Rate")
 dev.off()
 
 jpeg('~/Documents/Classes/statdemog/week1/loggomp.jpg')
-ggplot(data=DF, aes(x=age, y=log(nMx))) + geom_point()
+ggplot(data=DF, aes(x=age, y=log(nMx))) + geom_point() +
+    labs(title="Age Specific Mort Rate")
 dev.off()
 
 # Life Table code

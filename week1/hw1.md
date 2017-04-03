@@ -1,8 +1,11 @@
-# Homework Week 1  
+# Homework Week 1 Stat 593  
+### Neal Marquez 
 
 1. Suppose the force of mortality at age x for a cohort is $\mu(x) = x^2$.
 Denote by X the age at death of a person randomly chosen from this cohort (a
 random variable).  
+
+Subsections
 
     a. Find the Cumulitive hazard function.  
 
@@ -26,7 +29,7 @@ $f(x) = exp(\frac{x^3}{-3}) ~ x^2$.
 
     d. What is the name of this distribution?  
 
-Chi squared distribution.  
+Weibell distribution.  
 
     e. Find the life expectancy at birth of a member of this cohort.  
     
@@ -44,15 +47,21 @@ $e_2 \approx .2087$.
 
     g. Find 2q2 for this cohort.  
     
-Given that $_nq_x = S(x) - S(x+n)$ We can directly compute this as 
-$exp(2^3/-3) - exp(4^3/-3) \approx .0695$.  
+Given that $_nq_x = \frac{S(x) - S(x+n)}{S(x)}$ We can directly compute this as 
+$\frac{exp(2^3/-3) - exp(4^3/-3)}{exp(2^3/-3)} \approx .9999$.  
 
 2. Estimating life tables.  
+
+Subsections
 
     a. From the UN’s 2015 World Population Prospects, extract the estimates of 
     the age-specific mortality rates nmx for females in Mexico in 2005-2010. 
     Plot them against age on the raw and logarithmic scales, and comment on any 
     unusual features.  
+    
+Below are the plots for age againts age specific mortality and log age specific
+mortality. It is odd that they are so smooth over age as if the data had some
+underlying funcional form.
     
 ![](/home/nmarquez/Documents/Classes/statdemog/week1/gomp.jpg "")  
 ![](/home/nmarquez/Documents/Classes/statdemog/week1/loggomp.jpg "")
@@ -89,4 +98,97 @@ Work is shown in accompanying code.
 
     c. Find the life expectancy at birth and at age 10 for this population.  
     
-Life expectancy at birth is $78.276$ while at age ten it is $70.129$.
+Life expectancy at birth is $78.276$ while at age ten it is $70.129$.  
+
+## Appendix  
+
+```{R}
+rm(list=ls())
+pacman::p_load(pracma, data.table, wpp2015, ggplot2, knitr)
+
+# data cleaning
+data(mxF)
+DF <- subset(as.data.table(mxF), country == "Mexico", 
+             select=c("age", "2005-2010"))
+setnames(DF, c("age","nMx") )
+str(DF)
+DF[,age:=as.numeric(as.character(age))]
+
+# plot the pdf
+x <- seq(0, 10, .1)
+
+fx <- function(x){
+    exp(x**3 / -x) * x**2
+}
+
+jpeg('~/Documents/Classes/statdemog/week1/pdfX.jpg')
+qplot(x, fx(x),geom = "line")
+dev.off()
+
+# hazard function
+Hx <- function(x){
+    (x^3) / (3)
+}
+
+# survival function
+Sx <- function(x){
+    exp(-Hx(x))
+}
+
+# life expectancy
+e0 <- gamma(1/3) / 3^(2/3)
+e0
+
+# life expectancy at age 2
+gammainc(8/3, 1/3)[["uppinc"]] / 3^(2/3) / Sx(2)
+
+# 1g
+(exp(2^3/-3) - exp(4^3/-3)) / exp(2^3/-3)
+
+# 2a plot dat ain reg space and log space
+jpeg('~/Documents/Classes/statdemog/week1/gomp.jpg')
+ggplot(data=DF, aes(x=age, y=nMx)) + geom_point()
+dev.off()
+
+jpeg('~/Documents/Classes/statdemog/week1/loggomp.jpg')
+ggplot(data=DF, aes(x=age, y=log(nMx))) + geom_point()
+dev.off()
+
+# Life Table code
+
+DF[,n:=c(1,4, rep(5, nrow(DF) - 3), Inf)]
+DF[,nqx:= 1-exp(-n * nMx)]
+DF[age==max(age), nqx:=1]
+DF[,npx:=1-nqx]
+DF[,lx:=100000]
+DF[,ndx:=lx*nqx]
+for(i in 2:nrow(DF)){
+    prevd <- DF[i-1,ndx]
+    prevl <- DF[i-1,lx]
+    DF[i, lx:= prevl - prevd]
+    DF[,ndx:=lx*nqx]
+}
+
+DF[,nLx:=0]
+currl <- DF[1,lx]
+nextl <- DF[2,lx]
+DF[1,nLx:=.3 * currl + .7 * nextl]
+for(i in 2:(nrow(DF) - 1)){
+    currl <- DF[i,lx]
+    nextl <- DF[i+1,lx]
+    DF[i, nLx:= n*.5*(nextl + currl)]
+}
+
+# pulled from ref table 
+DF[nrow(DF),nLx:=lx * 5]
+
+DF[,Tx:=0]
+fullnLx <- DF$nLx
+for(i in 1:nrow(DF)){
+    DF[i,Tx:=sum(fullnLx[i:nrow(DF)])]
+}
+
+DF[,ex:=Tx/lx]
+
+kable(subset(DF, select=-n), format="markdown", digits = 3)
+```
