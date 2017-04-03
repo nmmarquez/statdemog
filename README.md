@@ -1,2 +1,2 @@
 # statdemog
-A rAftery stat class
+A. Raftery stat class
