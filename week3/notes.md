@@ -34,3 +34,8 @@
     - semi parametric  
     - generates family of life tables from two parameters $\alpha$ & $\beta$  
 
+# Lecture 6  
+
+## Lee Carter in depth  
+- ML vs SVD approach  
+- 
