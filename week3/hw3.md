@@ -1,3 +1,135 @@
+# Homework Week 2 Stat 593  
+### Neal Marquez 
+
+1) This question is largely a reprise of Question 2, Homework 2.
+
+  a) Obtain, write down and plot the age-specific net migration rates for 
+     Mexico in migrants per five-year period for 2005-2010.
+     
+  Data for age specific migration for Mexico females was extracted from bayespop
+  which was constructed via the residual method. the age structure shows that 
+  the bulk of migration occurs in young adults and nearly disappears by age 85.
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week2/migstructure.jpg "")
+  
+  b) Assuming that age-specific net migration rates (in migrants per five-year 
+  period) will stay constant to 2020, project the Mexican population forward 
+  from 2005 to 2010 and to 2020.
+
+  ![](/home/nmarquez/Documents/Classes/statdemog/week2/compareyear2.jpg "")
+  
+  Below are the projections for the population for 2010 and 2020 which account 
+  for the net out migration that occurs. Even with the net out migration the 
+  population is still growing.
+  
+  c) Compare your population projections Mexico in 2010 and 2020 with and 
+  without migration, numerically, graphically and verbally.
+  
+  The addition of the migration factor leads to a smaller population in the 
+  forecasts. This change is almost negligible in the 2010 projection, however, 
+  by the year 2020 we can see that accounting for migration has not only 
+  changed the population numbers but also the age structure as well where 
+  25 year olds account for `8.01%` and `8.07%` in the migration vs 
+  non-migration models respectively.
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week2/comparemig2010.jpg "")
+  ![](/home/nmarquez/Documents/Classes/statdemog/week2/comparemig2020.jpg "")
+  
+2) Extract the age-specific mortality rates for females in Mexico in 2005 by 
+five-year age groups from the 2015 World Population Prospects
+
+
+  a) Using only the rates for ages 50 above, estimate the parameters of a 
+  Gompertz model and a Gompertz-Makeham model for the mortality rates.
+  
+  The Gompertz model is a two parameter model which estimates mortality by
+  $\hat{m}_{xt} = \alpha exp(\beta x)$. This model has a log-linear form and 
+  can be estimated using a least-squres approach. This is done in `R` by using
+  the `lm` function but can also be accomplished by using the `optim` function
+  and specifying the model by hand. The Gompertz-Makeham model adds a constant 
+  $\gamma$ to the right hand side and must be fit using the `optim` function.
+  
+  b) Plot the fitted rates against the observed rates and comment on how good 
+  the model fits are. Is there evidence that the additional constant in the 
+  Gompertz-Makeham model is needed?
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/comparegomp.jpg "") 
+  
+  For ages 50 and above both Gompertz model and the Gompertz-Makeham model
+  have comparable results and both visually and statistically as there is very
+  little difference in the least square results of the model.
+  
+  c) Fit a Heligman-Pollard model to the full set of age-specific mortality 
+  rates. Plot the fitted rates against the observed rates and comment on how 
+  good the fit is.
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/hpplot.jpg "")
+  
+  The Heligman-Pollard model is an eight parameter model that has an extremely 
+  difficult time fitting on small amounts of data because of the number of
+  parameters and their degree of colinearity. A bayseian framework with strong 
+  priors is often suggested to fit the model, however even using `HPbayes` and
+  the exmple data the model was unable to fit well to the data. In this exercise
+  I attempted to fit the modle using a least squares optimization approach and 
+  carefully selected start values to model $q_x$ however it seemed due to the
+  lack of prominent middle age mortality hump the model was unable to converge.
+  
+  d) Select the Coale-Demeny West model life table that best corresponds to 
+  these data. Fit a Brass relational model to the data, and fit the observed 
+  against the fitted values. 
+  
+  Using RMSE to find the best fit for our mortality rate data suggested using
+  the life table with the highest life expectancy. Using the Brass relational 
+  model such that $logit(\hat{q}_x) = \alpha + \beta logit(q^{*}_x))$, where
+  $q^{*}_x$ is the best Coale-Demeny West model life table the expected values
+  yield very reasonable results compared to the observed data.  
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/mltplot.jpg "")  
+  
+  e) Compare the fits of the four models considered to these data. Which one 
+  fits the data best?
+  
+  The Brass relational model life table approach is the model that fits the most
+  realiably and produces the best fit to the full data series by the RMSE. This 
+  comparison was marred by the fact that the HP model was unable to reliably fit
+  the data.  
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/allmodelcompare.jpg "")  
+  
+3) Extract the age-specific mortality rates for females in Mexico for each of
+the 13 five-year periods from 1950 to 2015 by five-year age groups from the 
+2015 World Population Prospects.  
+  
+  a) Fit the Lee-Carter model to the data using the approximate least squares 
+  method described in class, and using the SVD method. Compare the results from 
+  these two methods, numerically, graphically and verbally.
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/lsleecarter.jpg "")
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/svdleecarter.jpg "")
+  
+  The two different approaches to the lee-carter model fitting process differ 
+  most drastically in the degree to which importance is placed on the random
+  walk component. The SVD approach give a value to $\hat{\nu}$ much closer
+  to zero than the least squares approach which is evidenced graphically by 
+  the almost non existant slope of the model fits. The two models produce very
+  similar values for the $\hat{\sigma}_{k}$ parameter, however, which dictactes the 
+  degree of uncertainty generated by the random walk. Values of `.032` and
+  `.052` are given for the SVD approach and least squares approach respectively.
+  
+  b) Use the Lee-Carter method to obtain probabilistic forecasts of mortality 
+  in Mexico for 2015-2020. 
+  
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/allleecarter.jpg "")
+  ![](/home/nmarquez/Documents/Classes/statdemog/week3/allleecarter75.jpg "")
+  
+  Looking at all age groups we can see what drove each model to choose a flat or
+  a sloped drift in the fitting process. Looking strictly at the age 75 group
+  we can see that the forecasted uncertainty for both model fits is roughly 
+  similar.
+  
+## Code Appendix
+
+```
 rm(list=ls())
 pacman::p_load(pracma, data.table, wpp2015, ggplot2, knitr, bayesPop)
 
@@ -338,3 +470,5 @@ ggplot(subset(DFfff, age == 75), aes(x=year, y=lnmxt, color=age,
     geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
     labs(title="Lee Carter Compare")
 dev.off()
+
+```
