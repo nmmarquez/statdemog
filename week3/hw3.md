@@ -129,7 +129,7 @@ the 13 five-year periods from 1950 to 2015 by five-year age groups from the
   
 ## Code Appendix
 
-```
+```R
 rm(list=ls())
 pacman::p_load(pracma, data.table, wpp2015, ggplot2, knitr, bayesPop)
 
