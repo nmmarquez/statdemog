@@ -274,15 +274,6 @@ nu <- (kt[length(kt)] - kt[1]) / (length(kt) - 1)
 sigma_k <- sd(kt[2:length(kt)] - kt[1:(length(kt) -1)])
 eps <- sd(mxt - (bx %*% t(kt) + ax))
 
-svds <- svd(meanadjxt)
-bxsvd <- svds$u[,1]
-ktsvd <- svds$v[,1]
-nusvd <- (ktsvd[length(ktsvd)] - ktsvd[1]) / (length(ktsvd) - 1)
-sigma_ksvd <- sd(ktsvd[2:length(ktsvd)] - ktsvd[1:(length(ktsvd) -1)])
-sigma_ksvd
-
-epssvd <- sd(mxt - (bxsvd %*% t(ktsvd) + ax))
-
 kt_forecast <- c(kt, kt[length(kt)] + nu)
 ktsvd_forecast <- c(ktsvd, ktsvd[length(ktsvd)] + nusvd)
 DFforecast <- data.table(lnmxt=c(bx %*% t(kt_forecast) + ax), 
@@ -301,6 +292,20 @@ ggplot(DFforecast, aes(x=year, y=lnmxt, color=age, group=age)) + geom_line() +
     labs(title="LS Lee-Carter")
 dev.off()
         
+
+lm.t.x <- t(mxt)
+Y <- sweep(lm.t.x, 2, ax);             #mean centered data
+Y.svd <- svd(Y);                       #returns U %*% diag(d) %*% t(V) = Y
+bxsvd <- Y.svd$v[,1];
+b1sign <- sign(bxsvd[1]);
+ktsvd <- Y.svd$d[1]*Y.svd$u[,1];
+bxsvd <- bxsvd*b1sign; 
+ktsvd <- ktsvd*b1sign;
+nusvd <- (ktsvd[length(ktsvd)] - ktsvd[1]) / (length(ktsvd) - 1)
+sigma_ksvd <- sd(ktsvd[2:length(ktsvd)] - ktsvd[1:(length(ktsvd) -1)])
+ktsvd_forecast <- c(ktsvd, ktsvd[length(ktsvd)] + nusvd)
+epssvd <- sd(mxt - (bxsvd %*% t(ktsvd) + ax))
+
 
 DFforecastsvd <- data.table(lnmxt=c(bxsvd %*% t(ktsvd_forecast) + ax), 
                             age=rep(DF$age, length(ktsvd_forecast)),
@@ -323,14 +328,24 @@ DFobs <- data.table(lnmxt=c(mxt), age=rep(DF$age, length(ktsvd)),
                     ymin=NA, ymax=NA)
 ggplot(DFobs, aes(x=year, y=lnmxt, color=age, group=age)) + geom_line()
 
-DFfff <- rbindlist(list(DFobs, DFforecast, DFforecastsvd))
+DFfff <- rbindlist(list(DFobs, DFforecast))
 
-jpeg('~/Documents/Classes/statdemog/week3/allleecarter.jpg')
+jpeg('~/Documents/Classes/statdemog/week3/allleecarterls.jpg')
 ggplot(DFfff, aes(x=year, y=lnmxt, color=age, 
                   group=interaction(age, model), linetype=model)) + 
     geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
-    labs(title="Lee Carter Compare")
+    labs(title="Lee Carter LS against Data")
 dev.off()
+
+DFfff2 <- rbindlist(list(DFobs, DFforecastsvd))
+
+jpeg('~/Documents/Classes/statdemog/week3/allleecartersvd.jpg')
+ggplot(DFfff2, aes(x=year, y=lnmxt, color=age, 
+                  group=interaction(age, model), linetype=model)) + 
+    geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
+    labs(title="Lee Carter SVD against Data")
+dev.off()
+
 
 jpeg('~/Documents/Classes/statdemog/week3/allleecarter75.jpg')
 ggplot(subset(DFfff, age == 75), aes(x=year, y=lnmxt, color=age, 
