@@ -12,8 +12,12 @@ The Lee Crater parameters were calculated in two seperate ways, once by least
 squares and another by SVD. The models proced very similiar mean forecasts 
 however gretaly differed in their uncertainty as seen by the standard deviation
 in the random walk of the $k_t$ terms which were `.0522` & `.3018` for the least
-squares and SVD methods respectively. The plots for each forecast method are 
-shown against the  actual mexico female mortality data in log space below.
+squares and SVD methods respectively. If the $b$ values are scaled so that they 
+average one and scale $k$ to the inverse of the same value in the svd model then
+the standard deviation of the random walk for the svd method becomes $.0557$ and
+much more similar to the least squares approach. Either way the final estimates 
+and uncertainty end up very similar. The plots for each forecast method are 
+shown against the  actual mexico female mortality data in log space below.  
 
 ![](/home/nmarquez/Documents/Classes/statdemog/week5/allleecarterls.jpg "")
 ![](/home/nmarquez/Documents/Classes/statdemog/week5/allleecartersvd.jpg "")
@@ -51,30 +55,30 @@ is the 2.5% confidence interval and ymax is the 97.5% confidence interval.
 
 ### SVD Model fit Estimates and Uncertainty
 
-|     lnmxt| age| year|model |      ymin|       ymax|
-|---------:|---:|----:|:-----|---------:|----------:|
-| -4.121788|   0| 2015|svd   | -4.713411| -3.5301656|
-| -7.314561|   1| 2015|svd   | -7.906183| -6.7229382|
-| -8.393671|   5| 2015|svd   | -8.985294| -7.8020485|
-| -8.538055|  10| 2015|svd   | -9.129678| -7.9464326|
-| -8.243947|  15| 2015|svd   | -8.835569| -7.6523240|
-| -7.932990|  20| 2015|svd   | -8.524613| -7.3413676|
-| -7.679733|  25| 2015|svd   | -8.271355| -7.0881099|
-| -7.380616|  30| 2015|svd   | -7.972239| -6.7889937|
-| -6.990557|  35| 2015|svd   | -7.582179| -6.3989341|
-| -6.532980|  40| 2015|svd   | -7.124602| -5.9413571|
-| -6.057571|  45| 2015|svd   | -6.649193| -5.4659481|
-| -5.581362|  50| 2015|svd   | -6.172985| -4.9897394|
-| -5.115113|  55| 2015|svd   | -5.706735| -4.5234902|
-| -4.656113|  60| 2015|svd   | -5.247736| -4.0644902|
-| -4.202307|  65| 2015|svd   | -4.793930| -3.6106845|
-| -3.746838|  70| 2015|svd   | -4.338461| -3.1552158|
-| -3.294020|  75| 2015|svd   | -3.885642| -2.7023970|
-| -2.762654|  80| 2015|svd   | -3.354277| -2.1710316|
-| -2.309824|  85| 2015|svd   | -2.901447| -1.7182013|
-| -1.899113|  90| 2015|svd   | -2.490735| -1.3074900|
-| -1.526774|  95| 2015|svd   | -2.118397| -0.9351517|
-| -1.086289| 100| 2015|svd   | -1.677912| -0.4946665|
+|     lnmxt| age| year|model |      ymin|      ymax|
+|---------:|---:|----:|:-----|---------:|---------:|
+| -4.121788|   0| 2015|svd   | -4.230890| -4.012686|
+| -7.314561|   1| 2015|svd   | -7.423663| -7.205459|
+| -8.393671|   5| 2015|svd   | -8.502773| -8.284569|
+| -8.538055|  10| 2015|svd   | -8.647157| -8.428953|
+| -8.243947|  15| 2015|svd   | -8.353049| -8.134845|
+| -7.932990|  20| 2015|svd   | -8.042092| -7.823888|
+| -7.679733|  25| 2015|svd   | -7.788835| -7.570631|
+| -7.380616|  30| 2015|svd   | -7.489718| -7.271514|
+| -6.990557|  35| 2015|svd   | -7.099659| -6.881455|
+| -6.532980|  40| 2015|svd   | -6.642082| -6.423878|
+| -6.057571|  45| 2015|svd   | -6.166673| -5.948469|
+| -5.581362|  50| 2015|svd   | -5.690464| -5.472260|
+| -5.115113|  55| 2015|svd   | -5.224215| -5.006011|
+| -4.656113|  60| 2015|svd   | -4.765215| -4.547011|
+| -4.202307|  65| 2015|svd   | -4.311409| -4.093205|
+| -3.746838|  70| 2015|svd   | -3.855940| -3.637736|
+| -3.294020|  75| 2015|svd   | -3.403122| -3.184918|
+| -2.762654|  80| 2015|svd   | -2.871756| -2.653552|
+| -2.309824|  85| 2015|svd   | -2.418926| -2.200722|
+| -1.899113|  90| 2015|svd   | -2.008215| -1.790011|
+| -1.526774|  95| 2015|svd   | -1.635876| -1.417672|
+| -1.086289| 100| 2015|svd   | -1.195391| -0.977187|
 
 3) The purpose of this question is to give you some practice in fitting the
 simplest form of Bayesian hierarchical model, namely the random intercept model,
@@ -143,9 +147,9 @@ were removed for burn in, to demonstrate this convergence graphically for the
 parameters we wish to estimate. The iteration number is on the x-axis while the
 sampling value for that iteration is on the y-axis.
 
-# ![Meow](/home/nmarquez/Documents/Classes/statdemog/week5/alltrace.png "")
+![](/home/nmarquez/Documents/Classes/statdemog/week5/alltrace.png "")
 
-# ![](/home/nmarquez/Documents/Classes/statdemog/week5/burntrace.png "")
+![](/home/nmarquez/Documents/Classes/statdemog/week5/burntrace.png "")
 
 e. Summarize the posterior distribution you obtain in graphical and table form.  
 
@@ -172,4 +176,180 @@ linear mixed effects model via restricted maximum likelihood (REML).
 ```
  mu_alpha     sigma_alpha   sigma_epsilon 
 -0.3111669     0.5019289     1.0972490 
+```
+
+### Code Appendix  
+
+#### R  
+```R
+rm(list=ls())
+pacman::p_load(pracma, data.table, wpp2015, ggplot2, knitr, bayesPop, mlmRev)
+
+# question 2
+data(mxF)
+DF <- subset(as.data.table(mxF), country == "Mexico", 
+             select=c("age", "2005-2010"))
+setnames(DF, c("age", "asmr"))
+DF$age <- as.numeric(as.character(DF$age))
+mxt <- log(as.matrix(subset(mxF, country == "Mexico")[,4:16]))
+ax <- apply(mxt, 1, mean)
+kt <- apply(mxt - ax, 2, mean)
+meanadjxt <- mxt - ax 
+
+bx <- apply(meanadjxt, 1, function(x) lm(x ~ 0 + kt)$coefficients[[1]])
+nu <- (kt[length(kt)] - kt[1]) / (length(kt) - 1)
+sigma_k <- sd(kt[2:length(kt)] - kt[1:(length(kt) -1)])
+eps <- sd(mxt - (bx %*% t(kt) + ax))
+
+kt_forecast <- c(kt, kt[length(kt)] + nu)
+
+
+DFforecast <- data.table(lnmxt=c(bx %*% t(kt_forecast) + ax), 
+                         age=rep(DF$age, length(kt_forecast)),
+                         year=rep(seq(1950, 2015, 5), each=nrow(DF)),
+                         model="ls")
+
+DFforecast[,ymin:=lnmxt - 1.96*sigma_k]
+DFforecast[year != 2015, ymin:=lnmxt]
+DFforecast[,ymax:=lnmxt + 1.96*sigma_k]
+DFforecast[year != 2015, ymax:=lnmxt]
+
+jpeg('~/Documents/Classes/statdemog/week5/lsleecarter.jpg')
+ggplot(DFforecast, aes(x=year, y=lnmxt, color=age, group=age)) + geom_line() +
+    geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) + 
+    labs(title="LS Lee-Carter")
+dev.off()
+
+
+lm.t.x <- t(mxt)
+Y <- sweep(lm.t.x, 2, ax)             #mean centered data
+Y.svd <- svd(Y)                       #returns U %*% diag(d) %*% t(V) = Y
+bxsvd <- Y.svd$v[,1]
+b1sign <- sign(bxsvd[1])
+ktsvd <- Y.svd$d[1]*Y.svd$u[,1]
+bxsvd <- bxsvd*b1sign 
+ktsvd <- ktsvd*b1sign
+scalefactor <- length(bxsvd) / sum(bxsvd)
+ktsvd <- ktsvd / scalefactor
+bxsvd <- bxsvd * scalefactor
+nusvd <- (ktsvd[length(ktsvd)] - ktsvd[1]) / (length(ktsvd) - 1)
+sigma_ksvd <- sd(ktsvd[2:length(ktsvd)] - ktsvd[1:(length(ktsvd) -1)])
+ktsvd_forecast <- c(ktsvd, ktsvd[length(ktsvd)] + nusvd)
+epssvd <- sd(mxt - (bxsvd %*% t(ktsvd) + ax))
+
+
+DFforecastsvd <- data.table(lnmxt=c(bxsvd %*% t(ktsvd_forecast) + ax), 
+                            age=rep(DF$age, length(ktsvd_forecast)),
+                            year=rep(seq(1950, 2015, 5), each=nrow(DF)),
+                            model="svd")
+
+DFforecastsvd[,ymin:=lnmxt - 1.96*sigma_ksvd]
+DFforecastsvd[year != 2015, ymin:=lnmxt]
+DFforecastsvd[,ymax:=lnmxt + 1.96*sigma_ksvd]
+DFforecastsvd[year != 2015, ymax:=lnmxt]
+
+jpeg('~/Documents/Classes/statdemog/week5/svdleecarter.jpg')
+ggplot(DFforecastsvd, aes(x=year, y=lnmxt, color=age, group=age)) + geom_line() +
+    geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) + 
+    labs(title="SVD Lee Carter")
+dev.off()
+
+DFobs <- data.table(lnmxt=c(mxt), age=rep(DF$age, length(ktsvd)),
+                    year=rep(seq(1950, 2010, 5), each=nrow(DF)), model="data",
+                    ymin=NA, ymax=NA)
+ggplot(DFobs, aes(x=year, y=lnmxt, color=age, group=age)) + geom_line()
+
+DFfff <- rbindlist(list(DFobs, DFforecast))
+
+jpeg('~/Documents/Classes/statdemog/week5/allleecarterls.jpg')
+ggplot(DFfff, aes(x=year, y=lnmxt, color=age, 
+                  group=interaction(age, model), linetype=model)) + 
+    geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
+    labs(title="Lee Carter LS against Data", y="Log Female Mortality in Mexico")
+dev.off()
+
+DFfff2 <- rbindlist(list(DFobs, DFforecastsvd))
+
+jpeg('~/Documents/Classes/statdemog/week5/allleecartersvd.jpg')
+ggplot(DFfff2, aes(x=year, y=lnmxt, color=age, 
+                   group=interaction(age, model), linetype=model)) + 
+    geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
+    labs(title="Lee Carter SVD against Data", y="Log Female Mortality in Mexico")
+dev.off()
+
+
+jpeg('~/Documents/Classes/statdemog/week5/allleecarter75.jpg')
+ggplot(subset(DFfff, age == 75), aes(x=year, y=lnmxt, color=age, 
+                                     group=interaction(age, model), linetype=model)) + 
+    geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) +
+    labs(title="Lee Carter Compare")
+dev.off()
+
+kable(subset(DFfff, year == 2015), format="markdown")
+kable(subset(DFfff2, year == 2015), format="markdown")
+
+
+# question 3
+mlm <- lmer(math ~ 1 + (1|schoolid), data=subset(egsingle, year==.5))
+mlm@beta
+
+params <- c(mlm@beta, as.data.frame(summary(mlm)$varcor)$sdcor)
+names(params) <- c("mu_alpha", "sigma_alpha", "sigma_epsilon")
+params
+
+sd(summary(subset(egsingle, year==.5)$math))
+```
+
+#### Python
+```Python
+import pymc3 as pm
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+DF = pd.read_csv("/home/nmarquez/Documents/Classes/statdemog/week5/school.csv")
+DF = DF.query("year == .5")[["schoolid", "math"]]
+DF["schoolfactor"] = pd.factorize(DF["schoolid"])[0]
+J = len(np.unique(DF.schoolfactor))
+N = DF.shape[0]
+
+
+with pm.Model() as BYHM:
+    mu_alpha = pm.Normal("mu_alpha", mu=0, sd=100.)
+    sigma_alpha = pm.Uniform("sigma_alpha", lower=0., upper=100.)
+    sigma_epsilon = pm.Uniform("sigma_epsilon", lower=0., upper=100.)
+
+    alpha_j = pm.Normal("alpha_j", mu_alpha, sd=sigma_alpha, shape=J)
+
+    mathhat = alpha_j[DF.schoolfactor.values]
+
+    ylike = pm.Normal("ylike", mu=mathhat, sd=sigma_epsilon,
+                      observed=DF.math.values)
+
+with BYHM:
+    step = pm.NUTS()
+    trace = pm.sample(5000, step=step)
+
+pm.traceplot(trace[0:])
+plt.suptitle("All 5000 traces", fontsize=24, y=.98)
+plt.subplots_adjust(top=0.92)
+plt.savefig('/home/nmarquez/Documents/Classes/statdemog/week5/alltrace.png')
+with BYHM:
+    # Use ADVI for initialization
+    mu, sds, elbo = pm.variational.advi(n=100000)
+    step = pm.NUTS(scaling=BYHM.dict_to_array(sds)**2, is_cov=True)
+    ht = pm.sample(5000, step, start=mu)
+
+burn = 500
+pm.traceplot(ht[burn:])
+plt.suptitle("Trace with 500 burn-in", fontsize=24, y=.98)
+plt.subplots_adjust(top=0.92)
+plt.savefig('/home/nmarquez/Documents/Classes/statdemog/week5/burntrace.png')
+
+params = ["mu_alpha", "sigma_alpha", "sigma_epsilon"]
+perc = [.025, .5, .975]
+desc = pd.DataFrame({k: pd.Series(ht[k][burn:]).describe(percentiles=perc)[1:]
+                     for k in params})
+desc
+
 ```

@@ -19,6 +19,7 @@ eps <- sd(mxt - (bx %*% t(kt) + ax))
 
 kt_forecast <- c(kt, kt[length(kt)] + nu)
 
+
 DFforecast <- data.table(lnmxt=c(bx %*% t(kt_forecast) + ax), 
                          age=rep(DF$age, length(kt_forecast)),
                          year=rep(seq(1950, 2015, 5), each=nrow(DF)),
@@ -37,13 +38,16 @@ dev.off()
 
 
 lm.t.x <- t(mxt)
-Y <- sweep(lm.t.x, 2, ax);             #mean centered data
-Y.svd <- svd(Y);                       #returns U %*% diag(d) %*% t(V) = Y
-bxsvd <- Y.svd$v[,1];
-b1sign <- sign(bxsvd[1]);
-ktsvd <- Y.svd$d[1]*Y.svd$u[,1];
-bxsvd <- bxsvd*b1sign; 
-ktsvd <- ktsvd*b1sign;
+Y <- sweep(lm.t.x, 2, ax)             #mean centered data
+Y.svd <- svd(Y)                       #returns U %*% diag(d) %*% t(V) = Y
+bxsvd <- Y.svd$v[,1]
+b1sign <- sign(bxsvd[1])
+ktsvd <- Y.svd$d[1]*Y.svd$u[,1]
+bxsvd <- bxsvd*b1sign 
+ktsvd <- ktsvd*b1sign
+scalefactor <- length(bxsvd) / sum(bxsvd)
+ktsvd <- ktsvd / scalefactor
+bxsvd <- bxsvd * scalefactor
 nusvd <- (ktsvd[length(ktsvd)] - ktsvd[1]) / (length(ktsvd) - 1)
 sigma_ksvd <- sd(ktsvd[2:length(ktsvd)] - ktsvd[1:(length(ktsvd) -1)])
 ktsvd_forecast <- c(ktsvd, ktsvd[length(ktsvd)] + nusvd)
