@@ -241,6 +241,22 @@ DLcurve.plot(m2, "Cambodia", col=c("yellow", "red", "black"), burnin=2000,
              pi=95, show.legend=FALSE)
 dev.off()
 
+jpeg('~/Documents/Classes/statdemog/week6/bayestfrdens1.jpg')
+tfr.pardensity.cs.plot("Guatemala",m2, par.names="d")
+dev.off()
+jpeg('~/Documents/Classes/statdemog/week6/bayestfrdens2.jpg')
+tfr.pardensity.cs.plot("Cambodia",m2, par.names="d")
+dev.off()
+
+get.tfr.parameter.traces.cs(m2$mcmc.list, 
+                            get.country.object("Guatemala", meta=m2$meta), 
+                            par.names = "d", burnin = 100, thin=30) %>% median
+
+get.tfr.parameter.traces.cs(m2$mcmc.list, 
+                            get.country.object("Cambodia", meta=m2$meta), 
+                            par.names = "d", burnin = 100, thin=30) %>% median
+
+
 jpeg('~/Documents/Classes/statdemog/week6/projfor.jpg')
 par(mfrow=c(1,2))
 tfr.trajectories.plot(pred, country="Guatemala")
