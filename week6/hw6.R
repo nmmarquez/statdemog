@@ -2,7 +2,7 @@ rm(list=ls())
 pacman::p_load(pracma, data.table, wpp2015, bayesTFR, knitr, bayesPop, dplyr,
                ggplot2, forecast)
 
-# question 2
+# question 1
 data(mxF)
 DF <- subset(as.data.table(mxF), country == "Mexico", 
              select=c("age", "2005-2010"))
@@ -223,6 +223,7 @@ jpeg('~/Documents/Classes/statdemog/week6/ntldens2015.jpg')
 plot(x, hx, "l", xlab="2015 Netherlands TFR Forecast", ylab="Density")
 dev.off()
 
+# bayes tfr compare
 
 rm(list = ls())
 
