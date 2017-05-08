@@ -226,3 +226,24 @@ dev.off()
 
 rm(list = ls())
 
+tfdir <- '~/Downloads/TFR/sim03092016'
+m2 <- get.tfr.mcmc(tfdir)
+m3 <- get.tfr3.mcmc(tfdir)
+pred <- get.tfr.prediction(tfdir)
+
+
+
+jpeg('~/Documents/Classes/statdemog/week6/bayestfrdlc.jpg')
+par(mfrow=c(1,2))
+DLcurve.plot(m2, "Guatemala", col=c("yellow", "red", "black"), burnin=2000,
+             pi=95, show.legend=FALSE)
+DLcurve.plot(m2, "Cambodia", col=c("yellow", "red", "black"), burnin=2000,
+             pi=95, show.legend=FALSE)
+dev.off()
+
+jpeg('~/Documents/Classes/statdemog/week6/projfor.jpg')
+par(mfrow=c(1,2))
+tfr.trajectories.plot(pred, country="Guatemala")
+tfr.trajectories.plot(pred, country="Cambodia")
+dev.off()
+
