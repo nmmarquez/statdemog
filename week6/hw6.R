@@ -1,5 +1,6 @@
 rm(list=ls())
-pacman::p_load(pracma, data.table, wpp2015, ggplot2, knitr, bayesPop, dplyr)
+pacman::p_load(pracma, data.table, wpp2015, bayesTFR, knitr, bayesPop, dplyr,
+               ggplot2, forecast)
 
 # question 2
 data(mxF)
@@ -221,3 +222,7 @@ hx <- dnorm(x, mean=mu2015, sd=eps)
 jpeg('~/Documents/Classes/statdemog/week6/ntldens2015.jpg')
 plot(x, hx, "l", xlab="2015 Netherlands TFR Forecast", ylab="Density")
 dev.off()
+
+
+rm(list = ls())
+
