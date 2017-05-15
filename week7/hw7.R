@@ -23,12 +23,12 @@ e0_proj <- function(params, e0=hond_e0){
 objfunc1 <- function(params, e0=hond_e0){
     N <- length(e0)
     sigma <- exp(params[7])
-    preds <- e0_proj(params, e0)[1:(N-1)]
-    return(sum(-1 * dnorm(diff(e0), preds, sigma, TRUE)))
+    preds <- e0 + e0_proj(params, e0)
+    return(sum(-1 * dnorm(e0[2:N], preds[1:(N-1)], sigma, TRUE)))
 }
 
 plot(hond_e0[1:(N-1)], diff(hond_e0))
-vals <- log(c(.77, 44.97, 20.21, .42, 3.93, 1.0, .4))
+vals <- log(c(1.08e-07, 62.77, 20.83, 9.83, 4.37, .87, .20))
 preds <- e0_proj(vals, hond_e0)[1:(N-1)]
 lines(hond_e0[1:(N-1)], preds, col="red")
 
@@ -36,7 +36,7 @@ Obj <- nlminb(vals, objfunc1)
 Obj$message
 preds <- e0_proj(Obj$par, hond_e0)
 
-jpeg('~/Documents/Classes/statdemog/week7/fitteddl.jpg')
+jpeg('~/Documents/Classes/statdemog/week7/fitteddle0.jpg')
 plot(hond_e0[1:(N-1)], diff(hond_e0), xlab="Life Expectancy", 
      ylab="Change in Life Expectancy", main="Honduras Life Expectancy Females")
 lines(hond_e0[1:(N-1)], preds[1:(N-1)], col="blue")
