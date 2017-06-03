@@ -1,4 +1,4 @@
-pacman::p_load(INLA, ar.matrix, data.table, ggplot2)
+pacman::p_load(INLA, ar.matrix, data.table, ggplot2, clusterPower)
 
 create_obs_mesh <- function(n, sigma0, range0){
     loc <- matrix(runif(n*2), n, 2) # simulate observed points
@@ -20,7 +20,7 @@ plot_mesh <- function(mesh){
 
 
 build_data <- function(n, m, sigma0=.3, range0=1., rho=.95, cov_cor=NULL, 
-                       betas=c(), X=NULL, mixed_corr=FALSE){
+                       betas=c(), X=NULL, mixed_corr=FALSE, p=0.){
     if(!is.null(sigma0)){
         mesh <- create_obs_mesh(n, sigma0, range0)
         Q <- kronecker(Q.AR1(m, 1, rho), mesh$Q)
@@ -52,7 +52,11 @@ build_data <- function(n, m, sigma0=.3, range0=1., rho=.95, cov_cor=NULL,
     }
     fix_ <- rowSums(sapply(1:length(betas_), function(i) betas_[i] * X[,i]))
     yraw <- fix_ + ran_
-    DT <- data.table(yraw=yraw)
+    # obs data 
+    p1 <- expit(yraw)
+    yobs <- rbinom(n*m, size= 1, prob=p1)
+    yobs[ rbinom(n*m, size=1, prob=p) == 1 ] <- 0
+    DT <- data.table(yraw=yraw, obs=yobs)
     if(length(betas) != 0){
         for(i in 1:ncol(X)){
             DT[[paste0("X", i)]] <- X[,i]
@@ -74,6 +78,6 @@ plot_field <- function(data_obj){
         facet_wrap(~time)
 }
 
-data_obj <- build_data(100, 12, betas=c(1,2,3), mixed_corr=TRUE)
+data_obj <- build_data(100, 12, betas=c(1,-2,1), mixed_corr=TRUE, p=.4)
 plot_mesh(data_obj$mesh)
 plot_field(data_obj)
