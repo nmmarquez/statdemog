@@ -1,5 +1,12 @@
 pacman::p_load(INLA, ar.matrix, data.table, ggplot2, clusterPower)
 
+mesh_to_dt <- function(x, proj, time){
+    M <- length(proj$x)
+    DT <- data.table(x=rep(proj$x, M), y=rep(proj$y, each=M), time=time, 
+                     obs=c(inla.mesh.project(proj, field=x)))
+    DT
+}
+
 create_obs_mesh <- function(n, sigma0, range0){
     loc <- matrix(runif(n*2), n, 2) # simulate observed points
     mesh <- inla.mesh.create(loc, refine=list(max.edge=1.)) # create mesh
@@ -22,24 +29,20 @@ plot_mesh <- function(mesh){
 
 build_data <- function(n, m, sigma0=.3, range0=1., rho=.95, cov_cor=NULL, 
                        betas=c(), X=NULL, mixed_corr=FALSE, p=0., miss=.2){
-    if(!is.null(sigma0)){
-        # if sigmna is not null then we want to create a field of geographic 
-        # correlations
-        mesh <- create_obs_mesh(n, sigma0, range0) # create the mesh 
-        Q <- kronecker(Q.AR1(m, 1, rho), mesh$Q) # combine time and space Q's
-        x <- matrix(data=c(sim.AR(1, Q)), nrow=mesh$n, ncol=m)
-        x <- x - mean(x) # ensure the simulation is zero centered
-        if(mixed_corr){
-            mixset <- apply(mesh$loc[,1:2] > .25 & mesh$loc[,1:2] < .75, 1, all)
-            x[mixset,] <- sapply(1:m, function(i) 
-                runif(sum(mixset), range(x)[1], range(x)[2]))
-        }
-        ran_ <- c(x[mesh$idx$loc,])
+    sigma0_ <- ifelse(is.null(sigma0), .3, sigma0)
+    mesh <- create_obs_mesh(n, sigma0_, range0) # create the mesh 
+    Q <- kronecker(Q.AR1(m, 1, rho), mesh$Q) # combine time and space Q's
+    x <- matrix(data=c(sim.AR(1, Q)), nrow=mesh$n, ncol=m)
+    x <- x - mean(x) # ensure the simulation is zero centered
+    if(mixed_corr){
+        mixset <- apply(mesh$loc[,1:2] > .25 & mesh$loc[,1:2] < .75, 1, all)
+        x[mixset,] <- sapply(1:m, function(i) 
+            runif(sum(mixset), range(x)[1], range(x)[2]))
     }
-    else{
-        mesh <- NULL
-        x <- rep(0, n *m)
-        ran_ <- x
+    ran_ <- c(x[mesh$idx$loc,])
+    if(is.null(sigma0)){
+        x <- x * 0
+        ran_ <- ran_ * 0
     }
     if(length(betas) == 0){
         betas_ <- 0
@@ -123,7 +126,14 @@ run_model <- function (data_obj, family=c("binomial", "zeroinflatedbinomial1")){
     return(res)
 }
 
-plot_result_mesh <- function(res){
-    
+plot_result_mesh <- function(data_obj, res){
+    sets <- lapply(1:data_obj$m, function(i) 
+        ((data_obj$mesh$n * (i-1)) + 1):(data_obj$mesh$n * i))
+    inlalist <- lapply(1:data_obj$m, function(i) 
+        mesh_to_dt(res$summary.random$i$mean[sets[[i]]], data_obj$mesh$proj, i))
+    inlaDT <- rbindlist(inlalist)
+    ggplot(inlaDT, aes(x, y, z=obs)) + geom_tile(aes(fill = obs)) + theme_bw() + 
+        lims(y=c(0,1), x=c(0,1)) + scale_fill_gradientn(colors=heat.colors(8)) + 
+        facet_wrap(~time)
 }
 
