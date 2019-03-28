@@ -6,6 +6,7 @@ pacman::p_load(pracma, data.table, wpp2015, bayesTFR, knitr, bayesPop, dplyr,
 
 # Question 1
 
+## Pull data sources from 
 data(e0F)
 head(e0F)
 hond_e0 <- c(as.matrix(subset(e0F, country == "Honduras")[,3:(ncol(e0F) - 1)]))

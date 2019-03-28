@@ -3,19 +3,28 @@ pacman::p_load(pracma, data.table, wpp2015, bayesTFR, knitr, bayesPop, dplyr,
                ggplot2, forecast)
 
 # question 1
+## Pull data sources from wpp2015
 data(mxF)
+## Only look at Mexico
 DF <- subset(as.data.table(mxF), country == "Mexico", 
              select=c("age", "2005-2010"))
 setnames(DF, c("age", "asmr"))
+# get the age group names
 DF$age <- as.numeric(as.character(DF$age))
+# pull the mxt data for all years relevant to this analysis
+# 1950-2015 in 5 year groups
 mxt <- log(as.matrix(subset(mxF, country == "Mexico")[,4:16]))
-ax <- apply(mxt, 1, mean)
-kt <- apply(mxt - ax, 2, mean)
-meanadjxt <- mxt - ax 
+ax <- apply(mxt, 1, mean) # mean within ages across time
+meanadjxt <- mxt - ax # demeaned within ages
+kt <- apply(meanadjxt, 2, mean)  # mean within time across ages after demeaning 
 
+# use the linear model approach to se how to modify kt to get better age
+# specific models
 bx <- apply(meanadjxt, 1, function(x) lm(x ~ 0 + kt)$coefficients[[1]])
+# variance of random walk
 nu <- (kt[length(kt)] - kt[1]) / (length(kt) - 1)
 sigma_k <- sd(kt[2:length(kt)] - kt[1:(length(kt) -1)])
+# random noise component
 eps <- sd(mxt - (bx %*% t(kt) + ax))
 
 kt_forecast <- c(kt, kt[length(kt)] + nu)
@@ -48,12 +57,12 @@ DFforecast[year == 2015 & age == 75, ymax2:= lnmxt + 1.96 * toterr]
 
 
 jpeg('~/Documents/Classes/statdemog/week6/lsleecarter.jpg')
-ggplot(DFforecast[age==75,], aes(x=year, y=lnmxt, color=age, group=age)) + 
+ggplot(DFforecast[age==" 75",], aes(x=year, y=lnmxt, color=age, group=age)) + 
     geom_line() + geom_ribbon(aes(ymin=ymin, ymax=ymax, fill=age), alpha=.5) + 
     labs(title="LS Lee-Carter")
 dev.off()
 
-DFforecast[year == 2015 & age == 75,list(lnmxt, ymin, ymax, ymin2, ymax2)] %>%
+DFforecast[year == 2015 & age ==" 75",list(lnmxt, ymin, ymax, ymin2, ymax2)] %>%
     exp %>% kable(format="markdown")
 
 
